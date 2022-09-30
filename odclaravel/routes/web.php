@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\admin;
+use App\Http\Controllers\Uplo;
+use App\Http\Controllers\blogs;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User;
-use App\Http\Controllers\Admin;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,25 +15,37 @@ use App\Http\Controllers\Admin;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-
-Route::group(['prefix'=>"Admin","middleware"=>'auth'],function(){
-  
-    Route::get('addNewArticle',[Admin::class,"addNewArticle"]);
-    Route::post('store',[Admin::class,"store"]);
-    // Route::post('store',[Admin::class,"store"]);
-    // Route::post('update',[Admin::class,"update"]);
-    // Route::get('edit/{id}',[Admin::class,"edit"]);
-    // Route::get('delete/{id}',[Admin::class,"delete"]);
+Route::get('/', function () {
+    $blogs = new blogs;   
+    $articles= DB::table("article")->join("category","category_id","=","catigory_id")->where('article.is_active',1)->get();
+    return view('index', compact("articles"));
 });
+Route::get('/login', function () {
+    return view('login');
+});
+Route::get('/logout', function () {
+    setcookie('admin', false, time()+60*60*60*60);
+    return redirect('/');
+});
+Route::get('Blog/Create', function () {
+    return view('create');
+});
+// Route::get('/',function (){
+//     Storage::disk('samir')->put('','');
+//     return "tmam";
+// })
+// ;
+Route::get('show',[UploadController::class,'show']);
+// Route::get('Blog/Create', [admin::class, "create"]);
 
-Route::get('login',[Admin::class,"login"])->name("login");
-Route::post("loginrequest",[Admin::class,"loginrequest"]);
-Route::get("logout",[Admin::class,"logout"]);
+Route::post('/postlogin', [admin::class, "postlogin"]);
+Route::get("/post/{id}", [blogs::class, "fatch"]);
+Route::get("/edit/{id}", [blogs::class, "edit"]);
+Route::post("blog/add", [admin::class, "addNewArticle"]);
+Route::post("comment/add/{id}", [blogs::class, "addcomment"]);
+Route::get("post/delete/{id}", [admin::class, "DeleteArticle"]);
+Route::get("post/hide/{id}", [admin::class, "hidearticle"]);
+Route::post("blog/update/{id}", [admin::class, "UpdateArticle"]);
 
 
-Route::get('/',[User::class,"index"]);
-Route::get('/posts',[User::class,"posts"]);
+

@@ -4,11 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xtra Blog</title>
+    <title>Personal Blog</title>
     <link rel="stylesheet" href="./assets/css/all.min.css"> <!-- https://fontawesome.com/ -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/templatemo-xtra-blog.css') }}" rel="stylesheet">
+    <style>
+        .row {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -36,6 +41,9 @@
                 <center>
                     <div class="col-12">
                         <hr class="tm-hr-primary tm-mb-55">
+                        <img src="{{ asset('assets/images/' . $article->img . '') }}"
+                            alt="Building microservices with Dropwizard, MongoDB & Docker" width="750"
+                            class="blog-banner-img">
                     </div>
                 </center>
             </div>
@@ -43,21 +51,18 @@
                 <div>
                     <div>
                         <div class="mb-4">
-                            <form action="{{ url('blog/add') }}" method="post" enctype='multipart/form-data'>
-                            @csrf
-                                <span>  </span>
-                                <span>Image :</span>
-                                    <div class="mb-4">
-                                    <input type="file" name="img" value="blog Image" >                                    
-                                    </div>
-                            <span>title :</span>
+                            <form action="{{ url("blog/update/$article->article_id") }}" method="post">
+                                @csrf
+                                <span>title :</span>
                                 <div class="mb-4">
-                                    <input type="text" class="form-control" name="title">
+                                    <input type="text" class="form-control" name="title"
+                                        value="{{ $article->title }}">
+                                    <p class="">{{ $article->time }} posted by Admin Nat</p>
                                     </br>
 
                                     <span>Body :</span>
                                     <div class="mb-4">
-                                        <textarea class="form-control" name="article_body" rows="15"></textarea>
+                                        <textarea class="form-control" name="article_body" rows="15">{{ $article->article_body }}</textarea>
                                     </div>
                                     <div class="text-right">
                                         <input type="submit" class="tm-btn tm-btn-primary tm-btn-small"
@@ -67,7 +72,10 @@
                             {{-- <span class="d-block text-right tm-color-primary">Creative . Design . Business</span> --}}
                         </div>
 
-                        <!-- Comments -->
+
+
+
+
 
                     </div>
                 </div>

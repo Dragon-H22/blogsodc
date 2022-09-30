@@ -2,50 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
-
-class Admin extends Controller
+class admin extends Controller
 {
-    public function login()
+    
+    # addNewArticle - DeleteArticle - HideComment - login
+    function Login()
     {
-        return view('login');
+        return view("login");
     }
 
-    public function loginrequest(Request $request)
+    public function postlogin(Request $request)
     {
-        $data = [
-            "email" => $request->email,
-            "password" => $request->password
-        ];
-
-        if (Auth::attempt($data)) {
-            return redirect("Admin/addNewArticle");
+        $req = $request->only("email", "password");
+        $r = DB::table('users')->where("email", "=", $req['email'])->where("password", "=", $req["password"])->get();
+        if (count($r)) {
+            setcookie('admin', true, time() + 60 * 60 * 60, '/');
+            return redirect('/');
+        } else {
+            return redirect("login");
         }
-        return redirect("login");
-    }
-
-
-    public function logout()
-    {
-        Auth::logout();
-        return redirect("login");
     }
 
     public function addNewArticle(Request $request)
     {
-        return view("create");
+        $ss = "blog-".rand(1,10).".png";
+        DB::table("article")->insert([
+            "article_body" => $request->article_body,
+            "title" => $request->title,
+            "category_id"=>1,
+            "is_active" => 1,
+            "time"=>now(),
+            "img"=>"$ss",
+        ]);
+        
+        return redirect("/");
     }
 
-    public function store(Request $request)
-    {
 
-        DB::table("article")->insert([
-            "article_body" => $request->body,
-            "article_title" => $request->title,
-            "isactive" => 1
+    public function UpdateArticle($id,Request $request)
+    {
+        DB::table("article")->where('article_id', $id)->update([
+            "article_body" => $request->article_body,
+            "title" => $request->title
         ]);
-        return redirect("posts");
+        return redirect("/");
+    }
+    public function DeleteArticle($id)
+    {
+        DB::table("article")->where('article_id', $id)->delete();
+        return redirect("/");
+    }
+    public function DeleteComment(Request $request)
+    {
+        DB::table("comment")->where('id', $request->id)->delete();
+        return redirect("/");
+    }
+    public function hidearticle(Request $request)
+    {
+        DB::table("article")->where('article_id', $request->id)->update([
+            "is_active" => 0
+        ]);
+        return redirect("/");
+    }
+    public function HideComment(Request $request)
+    {
+        DB::table("comments")->where('id', $request->id)->update([
+            "isactive" => 0
+        ]);
+        return redirect("/");
     }
 }

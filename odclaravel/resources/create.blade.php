@@ -36,6 +36,9 @@
                 <center>
                     <div class="col-12">
                         <hr class="tm-hr-primary tm-mb-55">
+                        <img src="{{ asset('assets/images/' . $article->img . '') }}"
+                            alt="Building microservices with Dropwizard, MongoDB & Docker" width="750"
+                            class="blog-banner-img">
                     </div>
                 </center>
             </div>
@@ -43,33 +46,19 @@
                 <div>
                     <div>
                         <div class="mb-4">
-                            <form action="{{ url('blog/add') }}" method="post" enctype='multipart/form-data'>
-                            @csrf
-                                <span>  </span>
-                                <span>Image :</span>
-                                    <div class="mb-4">
-                                    <input type="file" name="img" value="blog Image" >                                    
-                                    </div>
-                            <span>title :</span>
-                                <div class="mb-4">
-                                    <input type="text" class="form-control" name="title">
-                                    </br>
-
-                                    <span>Body :</span>
-                                    <div class="mb-4">
-                                        <textarea class="form-control" name="article_body" rows="15"></textarea>
-                                    </div>
-                                    <div class="text-right">
-                                        <input type="submit" class="tm-btn tm-btn-primary tm-btn-small"
-                                            value="Submit" />
-                            </form>
+                        <form action="{{url("post/create")}}" method="POST">
+                        <span>title :</span>
+                            <input type="text" name="title">
+                            <p class="tm-mb-40">{{ $article->time }} posted by Admin Nat</p>
+                            </br>
+                            <span>Body :</span>
+                            <input type="text" name="article_body">
+                            <input type="submit">
                             {{-- بعدين --}}
                             {{-- <span class="d-block text-right tm-color-primary">Creative . Design . Business</span> --}}
                         </div>
-
+</form>
                         <!-- Comments -->
-
-                    </div>
                 </div>
 
             </div>
