@@ -1,11 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin;
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Http\Controllers\test;
-
+use App\Http\Controllers\User;
+use App\Http\Controllers\Admin;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,14 +14,25 @@ use App\Http\Controllers\test;
 |
 */
 
-Route::get('/',[test::class,'index']);
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
-Route::get("logout",[User::class,"logout"]);
-Route::get('login',[admin::class,'login']);
-Route::post('postlogin',[admin::class,'postlogin']);
-
-Route::group(['prefix'=>"admin","middleware"=>'auth'],function(){
-    Route::get('index',[admin::class,"index"]);
+Route::group(['prefix'=>"Admin","middleware"=>'auth'],function(){
+  
+    Route::get('addNewArticle',[Admin::class,"addNewArticle"]);
+    Route::post('store',[Admin::class,"store"]);
+    // Route::post('store',[Admin::class,"store"]);
+    // Route::post('update',[Admin::class,"update"]);
+    // Route::get('edit/{id}',[Admin::class,"edit"]);
+    // Route::get('delete/{id}',[Admin::class,"delete"]);
 });
 
+Route::get('login',[Admin::class,"login"])->name("login");
+Route::post("loginrequest",[Admin::class,"loginrequest"]);
+Route::get("logout",[Admin::class,"logout"]);
+
+
+Route::get('/',[User::class,"index"]);
+Route::get('/posts',[User::class,"posts"]);
